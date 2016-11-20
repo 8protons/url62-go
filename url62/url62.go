@@ -48,18 +48,19 @@ func convertUp(oldNumber string, baseAlphabet string) (string, error) {
 	newNumber := make([]byte, 23) //converted size of max base-62 uuid
 	i := len(newNumber)
 
-	for n.Int64() != 0 {
+	zero := big.NewInt(0)
+	for n.Cmp(zero) != 0 {
 		i--
 		_, r := n.DivMod(n, base, big.NewInt(0))
 		newNumber[i] = baseAlphabet[r.Int64()]
 	}
-	return string(newNumber[i:]), nil
+	return fmt.Sprintf("%022s", newNumber[i:]), nil
 }
 
 func convertDown(oldNumber string, baseAlphabet string) (string, error) {
 	// Return if oldNumber is less or bigger than 22
 	if len(oldNumber) != 22 {
-		return "", errors.New("Not valid base62 string")
+		return "", errors.New("Not valid base62-encoded UUID string")
 	}
 
 	n := big.NewInt(0)
@@ -79,7 +80,7 @@ func convertDown(oldNumber string, baseAlphabet string) (string, error) {
 		n.Add(n, big.NewInt(int64(i)))
 	}
 
-	return fmt.Sprintf("%02x", n), nil
+	return fmt.Sprintf("%032x", n), nil
 }
 
 func insert(s string, sep string, i int) string {

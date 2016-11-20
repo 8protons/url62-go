@@ -27,3 +27,16 @@ func Test_Wrong_ToUUID(t *testing.T) {
 		t.Error("Not valid")
 	}
 }
+
+func Test_ManyZeroes_UUID(t *testing.T) {
+	ref := "00000000-0000-4000-8000-000000000000"
+	u, err := FromUUID(ref)
+	if err != nil || u != "000000001vGeH72LxVtxKg" {
+		t.Error("Not valid")
+	}
+
+	d, err := ToUUID(u)
+	if err != nil || d != ref {
+		t.Error("Not valid")
+	}
+}
